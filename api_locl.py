@@ -18,19 +18,23 @@ def home():
 
 
 @app.route('/api/v1/resources/books/all', methods=['GET'])
+#function retrieves all the data from books.db
 def api_all():
-     conn = sqlite3.connect('books.db')
-     conn.row_factory = dictionary_b
-     cur = conn.cursor()
+    
+     book_db = sqlite3.connect('books.db')
+     book_db.row_factory = dictionary_b
+     cur = book_db.cursor()
      all_books = cur.execute('SELECT * FROM books;').fetchall()
 
      return jsonify(all_books)
 
 @app.errorhandler(404)
+#Error handling function
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 @app.route('/api/v1/resources/books', methods=['GET'])
+#Enables user to filter using parameters
 def api_filter():
     query_parameters = request.args
     id = query_parameters.get('id')
@@ -54,9 +58,9 @@ def api_filter():
 
     query = query[:-4] + ';'
 
-    conn = sqlite3.connect('books.db')
-    conn.row_factory = dictionary_b
-    cur = conn.cursor()
+    book_db= sqlite3.connect('books.db')
+    book_db.row_factory = dictionary_b
+    cur = book_db.cursor()
 
     results = cur.execute(query, to_filter).fetchall()
 
